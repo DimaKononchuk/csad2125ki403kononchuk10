@@ -5,26 +5,40 @@ import org.example.SerialCommunicator;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
+/***
+ * Клас для відображення діалогу очікування результатів гри.
+ * @author Dmytro Kononchuk KI-403
+ */
 public class ResultWaitingForm {
-    private SerialCommunicator serialCommunicator;
-    private Timer resultCheckTimer;
-    private StringBuilder dataBuffer;
-    private Runnable onGameEndListener;
+    private SerialCommunicator serialCommunicator; // Комунікатор для зв'язку з Arduino
+    private Timer resultCheckTimer; // Таймер для перевірки результатів
+    private StringBuilder dataBuffer; // Буфер для зберігання отриманих даних
+    private Runnable onGameEndListener; // Слухач для обробки завершення гри
     private JDialog waitingDialog; // Діалог для очікування результатів
 
+    /**
+     * Конструктор для ініціалізації класу з переданим комунікатором.
+
+     * @param serialCommunicator комунікатор для зв'язку з Arduino
+     */
     public ResultWaitingForm(SerialCommunicator serialCommunicator) {
         this.serialCommunicator = serialCommunicator;
         this.dataBuffer = new StringBuilder();
     }
 
+    /**
+     * Встановлює слухача для обробки події завершення гри.
+     *
+     * @param listener слухач, який буде викликано при завершенні гри
+     */
     public void setOnGameEndListener(Runnable listener) {
         this.onGameEndListener = listener;
     }
 
+    /**
+     * Запускає процес очікування результатів.
+     */
     public void start() {
         // Показуємо форму очікування результатів
         showWaitingForm();
@@ -32,6 +46,9 @@ public class ResultWaitingForm {
         startResultCheckTimer();
     }
 
+    /**
+     * Відображає діалогове вікно для очікування результатів.
+     */
     private void showWaitingForm() {
         waitingDialog = new JDialog(); // Використовуємо JDialog для вікна очікування
         waitingDialog.setTitle("Waiting");
@@ -44,6 +61,9 @@ public class ResultWaitingForm {
         waitingDialog.setVisible(true);
     }
 
+    /**
+     * Запускає таймер для перевірки результатів через певний інтервал часу.
+     */
     private void startResultCheckTimer() {
         resultCheckTimer = new Timer(100, new ActionListener() {
             @Override
@@ -58,6 +78,11 @@ public class ResultWaitingForm {
         resultCheckTimer.start();
     }
 
+    /**
+     * Перевіряє наявність результатів і обробляє їх, якщо вони доступні.
+     *
+     * @throws InterruptedException якщо перевірка результатів була перервана
+     */
     private void checkForResults() throws InterruptedException {
         if (serialCommunicator.hasAvailableData()) {
             String response = serialCommunicator.readMessage();
@@ -69,7 +94,7 @@ public class ResultWaitingForm {
                 if (dataBuffer.toString().contains("\n")) {
                     String[] results = dataBuffer.toString().trim().split("\n"); // Розділяємо на рядки
                     dataBuffer.setLength(0); // Очищаємо буфер
-                    Thread.sleep(2000);
+
                     showResult(results); // Показуємо результати
                     resultCheckTimer.stop(); // Зупиняємо таймер
                     waitingDialog.dispose(); // Закриваємо форму очікування
@@ -78,6 +103,11 @@ public class ResultWaitingForm {
         }
     }
 
+    /**
+     * Відображає результати гри у вигляді повідомлення.
+     *
+     * @param results масив результатів для відображення
+     */
     private void showResult(String[] results) {
         StringBuilder resultMessage = new StringBuilder(); // Заголовок для результатів
 
@@ -93,6 +123,9 @@ public class ResultWaitingForm {
         endGame();
     }
 
+    /**
+     * Викликає слухача на завершення гри, якщо він заданий.
+     */
     private void endGame() {
         if (onGameEndListener != null) {
             onGameEndListener.run(); // Викликаємо слухача на завершення гри

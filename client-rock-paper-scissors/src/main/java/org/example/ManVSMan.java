@@ -1,40 +1,59 @@
 package org.example;
+
 import com.fazecast.jSerialComm.SerialPort;
 import org.example.gui.Man;
 import javax.swing.*;
 
+/**
+ * Клас для реалізації гри між двома гравцями.
+ * @author Dmytro Kononchuk KI-403
+ */
 public class ManVSMan {
 
-    SerialCommunicator communicator;
-    private Man player1;
-    private Man player2;
-    public ManVSMan(SerialCommunicator communicator){
-        this.communicator=communicator;
+    private SerialCommunicator communicator; // Комунікатор для зв'язку з Arduino
+    private Man player1; // Перший гравець
+    private Man player2; // Другий гравець
 
+    /**
+     * Конструктор класу ManVSMan.
+
+     * @param communicator комунікатор для зв'язку з Arduino
+     */
+    public ManVSMan(SerialCommunicator communicator) {
+        this.communicator = communicator;
     }
-    public void PlayGame(Runnable onGameEnd){
-        player1=new Man("Player №1");
+
+    /**
+     * Запускає гру між двома гравцями.
+     *
+     * @param onGameEnd слухач, який буде викликано при завершенні гри
+     */
+    public void PlayGame(Runnable onGameEnd) {
+        player1 = new Man("Player №1");
         player1.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
             public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                communicator.sendMessage("Player №1:"+player1.getName().toString()+":"+player1.getChoice()+"\n");
+                communicator.sendMessage("Player №1:" + player1.getName() + ":" + player1.getChoice() + "\n");
                 System.out.println(player1.getChoice());
-                player2=new Man("Player №2");
+                player2 = new Man("Player №2");
                 player2.addWindowListener(new java.awt.event.WindowAdapter() {
                     @Override
                     public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                        communicator.sendMessage("Player №2:"+player2.getName().toString()+":"+player2.getChoice()+"\n");
+                        communicator.sendMessage("Player №2:" + player2.getName() + ":" + player2.getChoice() + "\n");
                         System.out.println(player2.getChoice());
-                        //Main.main(null);
                         // Після завершення дій гравців запускаємо форму очікування результатів
                         startWaitingForResults(onGameEnd);
                     }
                 });
             }
         });
-
     }
 
+    /**
+     * Запускає форму для очікування результатів після завершення гри.
+     *
+     * @param onGameEnd слухач, який буде викликано при завершенні гри
+     */
     private void startWaitingForResults(Runnable onGameEnd) {
         // Створюємо екземпляр ResultWaitingForm для очікування результатів
         ResultWaitingForm resultWaitingForm = new ResultWaitingForm(communicator);
