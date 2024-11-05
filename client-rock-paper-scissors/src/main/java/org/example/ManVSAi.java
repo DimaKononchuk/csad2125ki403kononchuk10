@@ -1,5 +1,7 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.gui.Man;
 
 import javax.swing.*;
@@ -8,6 +10,8 @@ import javax.swing.*;
  * Клас для реалізації гри між гравцем і штучним інтелектом (AI).
  * @author Dmytro Kononchuk KI-403
  */
+@Setter
+@Getter
 public class ManVSAi {
 
     private SerialCommunicator communicator; // Комунікатор для зв'язку з Arduino
@@ -45,7 +49,7 @@ public class ManVSAi {
      *
      * @param onGameEnd слухач, який буде викликано при завершенні гри
      */
-    private void startWaitingForResults(Runnable onGameEnd) {
+    public void startWaitingForResults(Runnable onGameEnd) {
         // Створюємо екземпляр ResultWaitingForm для очікування результатів
         ResultWaitingForm resultWaitingForm = new ResultWaitingForm(communicator);
 
