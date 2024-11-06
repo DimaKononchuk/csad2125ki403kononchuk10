@@ -23,33 +23,7 @@ public class ManVSAiTest {
         mockOnGameEnd = mock(Runnable.class);
     }
 
-    //@Test
-    public void testPlayGame_SendsMessageForPlayer() {
-        // Підготовка
-        Man mockPlayer = mock(Man.class); // Створення мока для гравця
-        when(mockPlayer.getName()).thenReturn("dima"); // Налаштування повернення імені гравця
-        when(mockPlayer.getChoice()).thenReturn("Rock"); // Налаштування повернення вибору гравця
-
-        // Додавання слухача до гри
-        game.PlayGame(mockOnGameEnd); // Запуск гри з моком слухача завершення
-        game.setPlayer1(mockPlayer); // Пряме встановлення мока гравця в гру
-        verify(mockCommunicator).openPort();
-        // Симулюємо закриття вікна
-        game.getPlayer1().addWindowListener(new java.awt.event.WindowAdapter() {
-            @Override
-            public void windowClosed(java.awt.event.WindowEvent windowEvent) {
-                // Виклик методу sendMessage вручну для перевірки
-                mockCommunicator.sendMessage("Player:" + mockPlayer.getName() + ":" + mockPlayer.getChoice() + "\n");
-            }
-        });
-
-        // Дії
-        game.startWaitingForResults(mockOnGameEnd); // Запуск очікування результатів
-
-        // Перевірка: впевнюємося, що повідомлення про вибір гравця надіслано до комунікатора
-        verify(mockCommunicator).sendMessage("Player:dima:Rock\n");
-    }
-
+    
     @Test
     public void testStartWaitingForResults_CallsOnGameEndListener() {
         // Підготовка
