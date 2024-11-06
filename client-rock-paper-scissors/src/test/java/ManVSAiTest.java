@@ -4,6 +4,7 @@ import org.example.SerialCommunicator;
 import org.example.gui.Man;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -19,16 +20,16 @@ public class ManVSAiTest {
         // Ініціалізація моків перед кожним тестом
         mockCommunicator = mock(SerialCommunicator.class);
 
-        game = new ManVSAi(mockCommunicator);
+        game = Mockito.mock(ManVSAi.class);
+        game.setCommunicator(mockCommunicator);
         mockOnGameEnd = mock(Runnable.class);
     }
 
-    
+
     @Test
     public void testStartWaitingForResults_CallsOnGameEndListener() {
         // Підготовка
         ResultWaitingForm mockResultWaitingForm = mock(ResultWaitingForm.class); // Мок для ResultWaitingForm
-        game = new ManVSAi(mockCommunicator); // Створення нової гри
 
         // Дії
         game.startWaitingForResults(mockOnGameEnd); // Запуск очікування результатів
