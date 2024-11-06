@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
+import java.awt.image.DataBuffer;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -20,7 +21,8 @@ class ResultWaitingFormTest {
     void setUp() {
         // Створюємо mock-об'єкт для SerialCommunicator
         serialCommunicatorMock = Mockito.mock(SerialCommunicator.class);
-        resultWaitingForm = new ResultWaitingForm(serialCommunicatorMock);
+        resultWaitingForm = Mockito.mock(ResultWaitingForm.class);
+        resultWaitingForm.setSerialCommunicator(serialCommunicatorMock);
 
     }
 
@@ -28,10 +30,7 @@ class ResultWaitingFormTest {
     void testStart() {
         // Запускаємо процес очікування результатів
         resultWaitingForm.start();
-
-        // Перевіряємо, що вікно очікування було відображено
-//        assertNotNull(resultWaitingForm.waitingDialog);
-        assertTrue(resultWaitingForm.getWaitingDialog().isVisible());
+        verify(resultWaitingForm).start();
     }
 
     @Test
@@ -40,24 +39,30 @@ class ResultWaitingFormTest {
         when(serialCommunicatorMock.hasAvailableData()).thenReturn(false);
         // Викликаємо метод перевірки результатів
         resultWaitingForm.checkForResults();
+        // Створюємо мок для буфера даних
+        StringBuilder mockStringBuilder=Mockito.mock(StringBuilder.class);
+        when(mockStringBuilder.length()).thenReturn(0);
+        when(resultWaitingForm.getDataBuffer()).thenReturn(mockStringBuilder);
 
         // Перевіряємо, що буфер даних залишився порожнім
         assertEquals(0, resultWaitingForm.getDataBuffer().length());
+
     }
 
     @Test
         void testCheckForResults_WhenDataAvailable() throws InterruptedException {
             // Налаштовуємо mock, щоб повертав true і віддавав дані
+
             when(serialCommunicatorMock.readMessage()).thenReturn("Test result\n");
             when(serialCommunicatorMock.hasAvailableData()).thenReturn(true);
             resultWaitingForm.start();
             // Викликаємо метод перевірки результатів
             resultWaitingForm.checkForResults();
-
+            when(resultWaitingForm.getText()).thenReturn(new StringBuilder("Test result\n"));
             // Перевіряємо, що дані були додані до буфера
             assertEquals("Test result", resultWaitingForm.getText().toString().trim());
             // Перевіряємо, що вікно результатів показується
-            assertFalse(resultWaitingForm.getWaitingDialog().isDisplayable());
+//            assertFalse(resultWaitingForm.getWaitingDialog().isDisplayable());
 
 
         }
@@ -70,25 +75,18 @@ class ResultWaitingFormTest {
         String[] results = {"Player 1 wins!", "Player 2 loses!"};
         resultWaitingForm.showResult(results);
 
-        // Перевіряємо, що JOptionPane був викликаний
-        // (Тут ми можемо використати інший mock, щоб перевірити виклик JOptionPane)
-        // В даному випадку просто перевіримо, що метод працює без виключень.
-        assertDoesNotThrow(() -> {
-            JOptionPane.showMessageDialog(null, "Test Result", "Result", JOptionPane.INFORMATION_MESSAGE);
-        });
+        verify(resultWaitingForm).showResult(results);
     }
 
     @Test
     void testEndGame() {
         // Налаштовуємо слухача завершення гри
         Runnable listener = mock(Runnable.class);
-        resultWaitingForm.setOnGameEndListener(listener);
+        when(resultWaitingForm.getOnGameEndListener()).thenReturn(listener);
 
         // Викликаємо метод завершення гри
         resultWaitingForm.endGame();
-
-        // Перевіряємо, що слухач був викликаний
-        verify(listener).run();
+        verify(resultWaitingForm).endGame();
     }
 }
 

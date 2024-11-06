@@ -1,11 +1,15 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.gui.Man;
 
 /**
  * Клас для реалізації гри між двома штучними інтелектами (AI).
  * @author Dmytro Kononchuk KI-403
  */
+@Getter
+@Setter
 public class AiVSAi {
 
     private SerialCommunicator communicator; // Комунікатор для зв'язку з Arduino

@@ -10,19 +10,22 @@ public class ModesTest {
 
     private SerialCommunicator communicator;
     private AiVSAi aiVSAi;
+    private Runnable mockOnGameEnd;
     @BeforeEach
     void setUp() {
+        mockOnGameEnd=Mockito.mock(Runnable.class);
         communicator = Mockito.mock(SerialCommunicator.class);
+
     }
 
     @Test
     void testPlayGameWinStrategy() {
-        // Ініціалізуємо клас AiVSAi з "Ai vs Ai(Win strategy)"
-        aiVSAi = new AiVSAi(communicator, "Ai vs Ai(Win strategy)");
+        AiVSAi aiVSAi = new AiVSAi(communicator,"Ai vs Ai(Win strategy)");
 
-        // Перевіряємо, чи надсилається правильне повідомлення на Arduino
-        aiVSAi.PlayGame(null);
 
+        aiVSAi.PlayGame(mockOnGameEnd);
+
+        // Перевіряємо, що sendMessage викликано з правильним повідомленням
         verify(communicator).sendMessage("Ai vs Ai(Win strategy)\n");
     }
 
@@ -32,7 +35,7 @@ public class ModesTest {
         aiVSAi = new AiVSAi(communicator, "Ai vs Ai(Random move)");
 
         // Перевіряємо, чи надсилається правильне повідомлення на Arduino
-        aiVSAi.PlayGame(null);
+        aiVSAi.PlayGame(mockOnGameEnd);
         verify(communicator).sendMessage("Ai vs Ai(Random move)\n");
     }
 

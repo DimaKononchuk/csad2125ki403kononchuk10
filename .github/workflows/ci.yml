@@ -58,6 +58,7 @@ jobs:
         path: client-rock-paper-scissors/target/*.jar  # Шлях до побудованого JAR
     - name: Generate Javadoc
       run: mvn javadoc:javadoc
+      working-directory: client-rock-paper-scissors  # Вказуємо робочу директорію
     
 
   # Друге завдання для компіляції Arduino-проєкту

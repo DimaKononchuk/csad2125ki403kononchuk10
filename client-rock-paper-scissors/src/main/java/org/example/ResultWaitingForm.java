@@ -100,7 +100,7 @@ public class ResultWaitingForm {
                 if (dataBuffer.toString().contains("\n")) {
                     String[] results = dataBuffer.toString().trim().split("\n"); // Розділяємо на рядки
                     text.setLength(0);
-                    text.replace(0,dataBuffer.length()-1,dataBuffer.toString());
+                    text.append(dataBuffer);
                     dataBuffer.setLength(0); // Очищаємо буфер
 
                     showResult(results); // Показуємо результати
