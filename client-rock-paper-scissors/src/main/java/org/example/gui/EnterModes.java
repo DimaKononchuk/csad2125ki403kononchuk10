@@ -12,6 +12,7 @@ public class EnterModes extends JFrame{
 
     public EnterModes(){
         super("Rock Paper Scissors - Choose Mode");
+
         comboBox.addItem("Man vs Man");
         comboBox.addItem("Man vs AI");
         comboBox.addItem("Ai vs Ai(Random move)");

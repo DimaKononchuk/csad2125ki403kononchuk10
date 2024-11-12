@@ -39,6 +39,7 @@ public class Man extends JFrame{
                         "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
+
         RockLabel.setIcon(new ImageIcon("./img/rock.png"));
         PaperLabel.setIcon(new ImageIcon("./img/paper.png"));
         ScissorsLabel.setIcon(new ImageIcon("./img/scissors.png"));

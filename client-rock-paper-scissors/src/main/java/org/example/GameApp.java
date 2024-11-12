@@ -1,6 +1,8 @@
 package org.example;
 
 import com.fazecast.jSerialComm.SerialPort;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.gui.EnterModes;
 import org.example.config.ConfigReader;
 
@@ -13,20 +15,27 @@ import java.io.File;
  *  Головний клас для запуску гри, що реалізує серійну комунікацію та вибір режимів гри.
  *  @author Dmytro Kononchuk KI-403
  */
+@Setter
+@Getter
 public class GameApp {
     private SerialCommunicator serialCommunicator; // Комунікатор для зв'язку з Arduino
     private EnterModes mode; // Вікно для вибору режиму гри
-
+    private ConfigReader configReader = new ConfigReader(new File("config.xml"));
     /**
      * Конструктор класу GameApp. Ініціалізує серійну комунікацію та запускає вибір режиму.
 
      */
     public GameApp() {
         // Ініціалізуємо серійну комунікацію
-        ConfigReader configReader = new ConfigReader(new File("config.xml"));
-        SerialPort[] ports = SerialPort.getCommPorts();
         serialCommunicator = new SerialCommunicator(SerialPort.getCommPort(configReader.getPort()));
-
+        serialCommunicator.openPort();
+        // Запускаємо вибір режиму
+        startModeSelection();
+    }
+    public GameApp(SerialCommunicator communicator) {
+        // Ініціалізуємо серійну комунікацію
+        serialCommunicator = communicator;
+        serialCommunicator.openPort();
         // Запускаємо вибір режиму
         startModeSelection();
     }
@@ -34,8 +43,8 @@ public class GameApp {
     /**
      * Запускає вікно для вибору режиму гри.
      */
-    private void startModeSelection() {
-        serialCommunicator.openPort();
+    public void startModeSelection() {
+
         mode = new EnterModes();
         mode.button.addActionListener(new ActionListener() {
             @Override
@@ -50,7 +59,7 @@ public class GameApp {
     /**
      * Обробляє вибір режиму гри.
      */
-    private void handleModeSelection() {
+    public void handleModeSelection() {
         String selectedMode = mode.getModes();
 
         // Відправляємо вибраний режим на Arduino
@@ -80,7 +89,7 @@ public class GameApp {
     public void onGameEnd() {
         // Після завершення гри знову відкриваємо вікно вибору режиму
         SwingUtilities.invokeLater(() -> {
-            serialCommunicator.closePort();
+
             startModeSelection(); // Заново запускаємо вибір режиму
         });
     }

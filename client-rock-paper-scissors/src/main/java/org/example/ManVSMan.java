@@ -1,6 +1,8 @@
 package org.example;
 
 import com.fazecast.jSerialComm.SerialPort;
+import lombok.Getter;
+import lombok.Setter;
 import org.example.gui.Man;
 import javax.swing.*;
 
@@ -8,6 +10,8 @@ import javax.swing.*;
  * Клас для реалізації гри між двома гравцями.
  * @author Dmytro Kononchuk KI-403
  */
+@Getter
+@Setter
 public class ManVSMan {
 
     private SerialCommunicator communicator; // Комунікатор для зв'язку з Arduino
@@ -54,7 +58,7 @@ public class ManVSMan {
      *
      * @param onGameEnd слухач, який буде викликано при завершенні гри
      */
-    private void startWaitingForResults(Runnable onGameEnd) {
+    public void startWaitingForResults(Runnable onGameEnd) {
         // Створюємо екземпляр ResultWaitingForm для очікування результатів
         ResultWaitingForm resultWaitingForm = new ResultWaitingForm(communicator);
 

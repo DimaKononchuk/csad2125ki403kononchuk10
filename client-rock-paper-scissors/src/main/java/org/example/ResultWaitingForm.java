@@ -1,5 +1,7 @@
 package org.example;
 
+import lombok.Getter;
+import lombok.Setter;
 import org.example.SerialCommunicator;
 
 import javax.swing.*;
@@ -10,10 +12,13 @@ import java.awt.event.ActionListener;
  * Клас для відображення діалогу очікування результатів гри.
  * @author Dmytro Kononchuk KI-403
  */
+@Getter
+@Setter
 public class ResultWaitingForm {
     private SerialCommunicator serialCommunicator; // Комунікатор для зв'язку з Arduino
     private Timer resultCheckTimer; // Таймер для перевірки результатів
     private StringBuilder dataBuffer; // Буфер для зберігання отриманих даних
+    private StringBuilder text;
     private Runnable onGameEndListener; // Слухач для обробки завершення гри
     private JDialog waitingDialog; // Діалог для очікування результатів
 
@@ -25,6 +30,7 @@ public class ResultWaitingForm {
     public ResultWaitingForm(SerialCommunicator serialCommunicator) {
         this.serialCommunicator = serialCommunicator;
         this.dataBuffer = new StringBuilder();
+        this.text=new StringBuilder();
     }
 
     /**
@@ -64,7 +70,7 @@ public class ResultWaitingForm {
     /**
      * Запускає таймер для перевірки результатів через певний інтервал часу.
      */
-    private void startResultCheckTimer() {
+    public void startResultCheckTimer() {
         resultCheckTimer = new Timer(100, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,7 +89,7 @@ public class ResultWaitingForm {
      *
      * @throws InterruptedException якщо перевірка результатів була перервана
      */
-    private void checkForResults() throws InterruptedException {
+    public void checkForResults() throws InterruptedException {
         if (serialCommunicator.hasAvailableData()) {
             String response = serialCommunicator.readMessage();
             if (response != null) {
@@ -93,6 +99,8 @@ public class ResultWaitingForm {
                 // Перевіряємо, чи містить буфер символ завершення передачі даних
                 if (dataBuffer.toString().contains("\n")) {
                     String[] results = dataBuffer.toString().trim().split("\n"); // Розділяємо на рядки
+                    text.setLength(0);
+                    text.append(dataBuffer);
                     dataBuffer.setLength(0); // Очищаємо буфер
 
                     showResult(results); // Показуємо результати
@@ -108,7 +116,7 @@ public class ResultWaitingForm {
      *
      * @param results масив результатів для відображення
      */
-    private void showResult(String[] results) {
+    public void showResult(String[] results) {
         StringBuilder resultMessage = new StringBuilder(); // Заголовок для результатів
 
         // Обробка кожного рядка результату
@@ -126,7 +134,7 @@ public class ResultWaitingForm {
     /**
      * Викликає слухача на завершення гри, якщо він заданий.
      */
-    private void endGame() {
+    public void endGame() {
         if (onGameEndListener != null) {
             onGameEndListener.run(); // Викликаємо слухача на завершення гри
         }

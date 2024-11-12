@@ -34,7 +34,7 @@ jobs:
 
     # Запускаємо тести для Java-проєкту
     - name: Run tests
-      run: mvn test
+      run: mvn test -e -X
       working-directory: client-rock-paper-scissors  # Вказуємо робочу директорію
 
     # Завантажуємо результати тестів як артефакти, навіть якщо тести не пройдуть (if: always())
@@ -56,7 +56,7 @@ jobs:
       with:
         name: built-app  # Ім'я артефакта JAR
         path: client-rock-paper-scissors/target/*.jar  # Шлях до побудованого JAR
-    
+
     - name: Generate Javadoc
       run: mvn javadoc:javadoc
       working-directory: client-rock-paper-scissors  # Вказуємо робочу директорію
