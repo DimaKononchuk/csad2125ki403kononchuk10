@@ -46,7 +46,7 @@ public class CommunicationTest {
         verify(mockSerialPort).closePort();
     }
     @Test
-    void readMessageTest() {
+    void readMessageTest() throws InterruptedException {
         // Arrange
         when(mockSerialPort.isOpen()).thenReturn(true);
         byte[] testData = "Response from Arduino".getBytes(StandardCharsets.UTF_8);

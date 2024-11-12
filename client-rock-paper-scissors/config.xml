@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <portParameters>
+        <port>COM2</port>
+        <newBaundRate>9600</newBaundRate>
+        <newDataBits>8</newDataBits>
+        <newStopBits>1</newStopBits>
+    </portParameters>
+    <portTimeouts>
+        <newReadTimes>1000</newReadTimes>
+        <newWriteTimes>1000</newWriteTimes>
+    </portTimeouts>
+</configuration>
