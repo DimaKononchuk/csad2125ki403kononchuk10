@@ -61,7 +61,7 @@ public class SerialCommunicator {
     // Функція для читання відповіді від Arduino
     public String readMessage() {
         if (arduinoPort != null && arduinoPort.isOpen()) {
-            byte[] readBuffer = new byte[1024];
+            byte[] readBuffer = new byte[2048];
             int numRead = arduinoPort.readBytes(readBuffer, readBuffer.length);
             if (numRead > 0) {
                 return new String(readBuffer, 0, numRead);
